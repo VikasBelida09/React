@@ -4,7 +4,10 @@ const jwt=require('jsonwebtoken')
 const expressJwt=require('express-jwt')
 
 exports.signout=(req,res)=>{
-   res.send("marega tu bsdk")
+   res.clearCookie("token")
+   res.json({
+       message:"User Signout Successfully"
+   })
  
 }
 exports.signup=(req,res)=>{
@@ -18,7 +21,7 @@ exports.signup=(req,res)=>{
         })
     }
     user.save((err,user)=>{
-        if(!err){
+        if(err){
             return res.send(err)
         }
         return res.send(user)
@@ -59,4 +62,26 @@ exports.signin=(req,res)=>{
         })
     })
 }
+exports.isSignedin=expressJwt({
+     secret:process.env.SECRET,
+     userProperty:"auth"
+});
 
+exports.isAuthorised=(req,res,next)=>{
+    let checker=req.profile && req.auth && req.profile._id == req.auth._id
+    if(!checker){
+       res.status(403).json({
+           msg:"Access denied"
+       })     
+    }
+    next()
+}
+
+exports.isAdmin=(req,res,next)=>{
+    if(req.profile.role===0){
+        res.status(403).json({
+            msg:"Access denied"
+        })
+    }
+    next()
+}

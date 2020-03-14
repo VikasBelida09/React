@@ -9,7 +9,8 @@ const productCartSchema=new mongoose.Schema({
     price:Number,
     count:String,
 })
-const ProductCart=mongoose.model("ProductCart",productCartSchema),
+const ProductCart=mongoose.model("ProductCart",productCartSchema)
+
 const orderSchema=new mongoose.Schema({
       products:[productCartSchema],
       transaction_id:{},

@@ -16,9 +16,8 @@ const {
 }=require('../controllers/auth')
 
 router.param('userId',getUserById)
-router.get('/user/:userId',isSignedin,isAuthorised,getUser)
+router.get('/user/:userId',isSignedin,isAuthorised,isAdmin,getUser)
 router.get('/users',getAllUsers)
 router.put('/users/:userId',getUpdatedUser)
 router.get('orders/user/:userId',getOrders)
 module.exports=router
-

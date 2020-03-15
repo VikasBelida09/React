@@ -7,17 +7,19 @@ exports.getCategoryById=(req,res,next,id)=>{
             error:"category unavailable"
         })
     }
-    res.category=cate     
+    req.category=cate
+    console.log(res.category)  
+    next()
+   
  })
 
- next()
 }
 exports.createCategory=(req,res)=>{
     const category=new Category(req.body)
     category.save((err,category)=>{
         if(err){
             return res.status(400).json({
-                error:"category unavailable"
+                error:"category already exists"
             })  
         }
         res.json({category})
@@ -35,4 +37,35 @@ exports.getAllCategories=(req,res)=>{
         }
         res.json({categ})
    })      
+}
+
+exports.updateCategory=(req,res)=>{
+   const category=req.category
+   console.log(category)
+   category.name=req.body.name
+   category.save((err,updatedCateg)=>{
+    if(err){
+        return res.status(400).json({
+            error:"unable to update category"
+        })  
+
+    }
+
+    res.json(updatedCateg)
+
+})     
+}
+
+exports.deleteCategory=(req,res)=>{
+    const category=req.category
+    category.remove((err,categ)=>{
+        if(err){
+            return res.status(400).json({
+                error:"unable to delete category"
+            })  
+        }
+        res.json({
+            message:`${categ} has been deleted successfully`
+        })
+    })
 }

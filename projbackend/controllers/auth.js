@@ -69,18 +69,20 @@ exports.isSignedin=expressJwt({
 
 exports.isAuthorised=(req,res,next)=>{
     let checker=req.profile && req.auth && req.profile._id == req.auth._id
+    console.log(req.profile)
+    console.log(req.auth)
     if(!checker){
        res.status(403).json({
-           msg:"Access denied"
+           msg:"Access denied because you are unauthorised"
        })     
     }
     next()
 }
 
 exports.isAdmin=(req,res,next)=>{
-    if(req.profile.role===0){
+    if(req.profile.role==0){
         res.status(403).json({
-            msg:"Access denied"
+            msg:"Access denied because you are not an admin"
         })
     }
     next()

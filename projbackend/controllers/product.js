@@ -85,6 +85,7 @@ exports.deleteProduct=(req,res)=>{
 }
 
 exports.updateProduct=(req,res)=>{
+    console.log()
     let form=new formidable.IncomingForm();
     form.keepExtensions=true
     form.parse(req,(err,fields,file)=>{

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Base from "../core/Base";
 import { Link } from "react-router-dom";
-import { getCategories } from "./helper/adminapicall";
+import { getCategories, createaProduct } from "./helper/adminapicall";
 import { isAutheticated } from "../auth/helper/index";
-
 const AddProduct = () => {
   const { user, token } = isAutheticated();
 
@@ -19,7 +18,7 @@ const AddProduct = () => {
     error: "",
     createdProduct: "",
     getaRedirect: false,
-    formData: ""
+    formData: "",
   });
 
   const {
@@ -33,16 +32,22 @@ const AddProduct = () => {
     error,
     createdProduct,
     getaRedirect,
-    formData
+    formData,
   } = values;
 
   const preload = () => {
-    getCategories().then(data => {
+    getCategories().then((data) => {
       //console.log(data);
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        setValues({ ...values, categories: data, formData: new FormData() });
+        setValues({
+          ...values,
+          categories: data.categ,
+          formData: new FormData(),
+        });
+        console.log(data);
+        console.log("categories", categories);
       }
     });
   };
@@ -51,16 +56,46 @@ const AddProduct = () => {
     preload();
   }, []);
 
-  const onSubmit = () => {
+  const onSubmit = (event) => {
     //
+    event.preventDefault();
+    setValues({ ...values, rror: true, loading: true });
+    createaProduct(user._id, token, formData).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error, loading });
+      } else {
+        setValues({
+          ...values,
+          name: "",
+          stock: "",
+          price: "",
+          photo: "",
+          description: "",
+          loading: false,
+          createdProduct: data.name,
+        });
+      }
+    });
   };
 
-  const handleChange = name => event => {
-    const value = name === "photo" ? event.target.file[0] : event.target.value;
+  const handleChange = (name) => (event) => {
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
+    console.log(formData);
     formData.set(name, value);
     setValues({ ...values, [name]: value });
   };
-
+  const successMessage = () => {
+    return (
+      <div
+        className="alert alert-success mt-3"
+        style={{ display: createdProduct ? "" : "none" }}
+      >
+        <h4>
+          <strong>{createdProduct}</strong> created successfully
+        </h4>
+      </div>
+    );
+  };
   const createProductForm = () => (
     <form>
       <span>Post photo</span>
@@ -119,7 +154,7 @@ const AddProduct = () => {
       </div>
       <div className="form-group">
         <input
-          onChange={handleChange("quantity")}
+          onChange={handleChange("stock")}
           type="number"
           className="form-control"
           placeholder="Stock"
@@ -147,7 +182,10 @@ const AddProduct = () => {
         Admin Home
       </Link>
       <div className="row bg-dark text-white rounded">
-        <div className="col-md-8 offset-md-2">{createProductForm()}</div>
+        <div className="col-md-8 offset-md-2">
+          {successMessage()}
+          {createProductForm()}
+        </div>
       </div>
     </Base>
   );

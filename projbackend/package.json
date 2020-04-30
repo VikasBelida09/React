@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "prettier": "prettier --write '**/*.{ts,js,css,html}'"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "morgan": "^1.9.1",
     "nodemon": "^1.19.4",
     "npm": "^6.13.0",
+    "stripe": "^8.47.1",
     "uuid": "^3.3.3"
   }
 }
